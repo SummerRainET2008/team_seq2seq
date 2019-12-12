@@ -3,12 +3,6 @@ from common.subword.sentence_encoder import SentenceEncoder
 from pa_nlp.tf_2x.estimator.param import ParamBase
 from pa_nlp.tf_2x import *
 
-# parameters
-# which optimizer
-# "decay_learning_rate"
-# "dropout_keep_prob": dropout_keep_prob,
-# "l2_reg_lambda": l2_reg_lambda,
-
 class Param(ParamBase):
   def __init__(self):
     super(Param, self).__init__("ver_2")
@@ -37,6 +31,7 @@ class Param(ParamBase):
     self.vocab_en_size = 30000
 
     self.use_polynormial_decay = False
+    self.use_warmup = False
 
     # model
     self.rnn_type = 'LSTM'
@@ -47,15 +42,9 @@ class Param(ParamBase):
     self.max_length_trg = 50
     self.enc_layers = 4
     self.lr = 5e-4
-    # self.lr_decay
     self.epoch_num   = 50
     self.batch_size  = 2
     self.evaluate_freq = 10
-    # self.atten_dropout = 0.05
-    # self.relu_dropout = 0.05
-    # self.layer_postprocess_dropout = 0.05
-    self.GPU: int = '1'  # which_GPU_to_run: [0, 4), and -1 denote CPU.
-
 
     '''
     self.train_files = [f"{self.path_feat}/train.tfrecord"]

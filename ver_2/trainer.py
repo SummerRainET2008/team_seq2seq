@@ -75,19 +75,34 @@ class Trainer(TrainerBase):
                        f"{self._checkpoint.run_samples.numpy()}.nbest.pydict"
       with open(path_to_pydict, 'w', encoding='utf8') as f:
         f.writelines(f'{item}\n' for item in all_to_export)
-      print('{} saved!'.format(path_to_pydict))
+      Logger.info('{} saved!'.format(path_to_pydict))
       try:
         bleu, _ = compute_bleu_score(bleu_src, bleu_ref, path_to_pydict)
-        print('BLEU for run samples {} is {}'.format(
+        Logger.info('BLEU for run samples {} is {}'.format(
           self._checkpoint.run_samples.numpy(), bleu))
       except AssertionError:
-        print('BLEU score compute error!')
+        Logger.info('BLEU score compute error!')
 
     return error
 
+def main():
+  parser = optparse.OptionParser(usage="cmd [optons] ..]")
+  # parser.add_option("-q", "--quiet", action="store_true", dest="verbose",
+  parser.add_option("--gpu", default="-1", help="default=-1")
+  parser.add_option("--debug_level", type=int, default=1)
+  (options, args) = parser.parse_args()
 
-if __name__ == '__main__':
+  os.environ["CUDA_VISIBLE_DEVICES"] = options.gpu
+  Logger.set_level(options.debug_level)
+
+  nlp.display_server_info()
+  Logger.info(f"GPU: {options.gpu}")
+
   param = Param()
   # param.verify()
   trainer = Trainer(param)
   trainer.train()
+
+if __name__ == '__main__':
+  main()
+
