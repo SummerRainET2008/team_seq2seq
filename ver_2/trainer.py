@@ -49,7 +49,7 @@ class Trainer(TrainerBase):
     total_time = time.time() - start_time
     avg_time = total_time / (idx + 1)
     Logger.info(
-      f"eval[{self._checkpoint.run_samples.numpy()}]: "
+      f"eval[{self._checkpoint.run_sample_num.numpy()}]: "
       f"file={data_file} error={error} "
       f"total_time={total_time:.4f} secs avg_time={avg_time:.4f} sec/sample "
     )
@@ -72,7 +72,7 @@ class Trainer(TrainerBase):
       if not os.path.exists(f"{self._param.path_bleu}/{dirname}"):
         os.mkdir(f"{self._param.path_bleu}/{dirname}")
       path_to_pydict = f"{self._param.path_bleu}/{dirname}/" \
-                       f"{self._checkpoint.run_samples.numpy()}.nbest.pydict"
+                       f"{self._checkpoint.run_sample_num.numpy()}.nbest.pydict"
       with open(path_to_pydict, 'w', encoding='utf8') as f:
         f.writelines(f'{item}\n' for item in all_to_export)
       Logger.info('{} saved!'.format(path_to_pydict))
