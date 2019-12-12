@@ -16,8 +16,8 @@ def gen_train_data(data_file, tf_file, param):
       y = np.array(y, np.int32)
 
       features = {
-          "x": nlp_tf.tf_feature_bytes(x.tobytes()),
-          "y": nlp_tf.tf_feature_bytes(y.tobytes())
+        "x": nlp_tf.tf_feature_bytes(x.tobytes()),
+        "y": nlp_tf.tf_feature_bytes(y.tobytes())
       }
 
       example_proto = tf.train.Example(
@@ -30,8 +30,12 @@ def gen_train_data(data_file, tf_file, param):
     with open(data_file, 'r', encoding='utf-8') as f:
       for line in f:
         en_cn = line.strip().split('\t')
-        en = convert_data(param.encoder_en, en_cn[0], pad=True, max_length=param.max_length_trg)
-        cn = convert_data(param.encoder_cn, en_cn[1], pad=True, max_length=param.max_length_src)
+        en = convert_data(
+          param.encoder_en, en_cn[0], pad=True, max_length=param.max_length_trg
+        )
+        cn = convert_data(
+          param.encoder_cn, en_cn[1], pad=True, max_length=param.max_length_src
+        )
         yield cn, en # for sample in seg_samples seg_samples is a list
 
   nlp_tf.tfrecord_write(get_file_record(data_file, param), Serializer(), tf_file)

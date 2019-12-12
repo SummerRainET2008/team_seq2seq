@@ -36,6 +36,8 @@ class Param(ParamBase):
     self.vocab_cn_size = 30000
     self.vocab_en_size = 30000
 
+    self.use_polynormial_decay = False
+
     # model
     self.rnn_type = 'LSTM'
     self.embedding_dim = 256 # 256
