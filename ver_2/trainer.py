@@ -49,7 +49,7 @@ class Trainer(TrainerBase):
     total_time = time.time() - start_time
     avg_time = total_time / (idx + 1)
     Logger.info(
-      f"eval[{self._checkpoint.run_samples.numpy()}]: "
+      f"eval[{self._checkpoint.run_sample_num.numpy()}]: "
       f"file={data_file} error={error} "
       f"total_time={total_time:.4f} secs avg_time={avg_time:.4f} sec/sample "
     )
@@ -72,22 +72,37 @@ class Trainer(TrainerBase):
       if not os.path.exists(f"{self._param.path_bleu}/{dirname}"):
         os.mkdir(f"{self._param.path_bleu}/{dirname}")
       path_to_pydict = f"{self._param.path_bleu}/{dirname}/" \
-                       f"{self._checkpoint.run_samples.numpy()}.nbest.pydict"
+                       f"{self._checkpoint.run_sample_num.numpy()}.nbest.pydict"
       with open(path_to_pydict, 'w', encoding='utf8') as f:
         f.writelines(f'{item}\n' for item in all_to_export)
-      print('{} saved!'.format(path_to_pydict))
+      Logger.info('{} saved!'.format(path_to_pydict))
       try:
         bleu, _ = compute_bleu_score(bleu_src, bleu_ref, path_to_pydict)
-        print('BLEU for run samples {} is {}'.format(
+        Logger.info('BLEU for run samples {} is {}'.format(
           self._checkpoint.run_samples.numpy(), bleu))
       except AssertionError:
-        print('BLEU score compute error!')
+        Logger.info('BLEU score compute error!')
 
     return error
 
+def main():
+  parser = optparse.OptionParser(usage="cmd [optons] ..]")
+  # parser.add_option("-q", "--quiet", action="store_true", dest="verbose",
+  parser.add_option("--gpu", default="-1", help="default=-1")
+  parser.add_option("--debug_level", type=int, default=1)
+  (options, args) = parser.parse_args()
 
-if __name__ == '__main__':
+  os.environ["CUDA_VISIBLE_DEVICES"] = options.gpu
+  Logger.set_level(options.debug_level)
+
+  nlp.display_server_info()
+  Logger.info(f"GPU: {options.gpu}")
+
   param = Param()
   # param.verify()
   trainer = Trainer(param)
   trainer.train()
+
+if __name__ == '__main__':
+  main()
+
