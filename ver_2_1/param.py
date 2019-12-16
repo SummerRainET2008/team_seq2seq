@@ -35,7 +35,7 @@ class Param(ParamBase):
     self.max_length_src = 50
     self.max_length_trg = 50
     self.enc_layers = 4
-    self.lr = 5e-5
+    self.lr = 5e-4
     self.epoch_num   = 100
     self.batch_size  = 2
     self.evaluate_freq = 10
