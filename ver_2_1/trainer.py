@@ -14,12 +14,12 @@ class Trainer(TrainerBase):
                                     param.batch_size, False)
     super(Trainer, self).__init__(param, model, data_read_iter)
 
-  # @tf.function(
-  #   input_signature=(
-  #     tf.TensorSpec(shape=[None, 50], dtype=tf.int32),
-  #     tf.TensorSpec(shape=[None, 50], dtype=tf.int32)
-  #   )
-  # )
+  @tf.function(
+    input_signature=(
+      tf.TensorSpec(shape=[None, 50], dtype=tf.int32),
+      tf.TensorSpec(shape=[None, 50], dtype=tf.int32)
+    )
+  )
   def _train_one_batch(self, src, trg):
     with tf.GradientTape() as tape:
       loss = self._model(src, trg)
@@ -27,12 +27,12 @@ class Trainer(TrainerBase):
     self._apply_optimizer(tape, loss)
     return batch_loss
 
-  # @tf.function(
-  #   input_signature=(
-  #     tf.TensorSpec(shape=[None, 50], dtype=tf.int32),
-  #     tf.TensorSpec(shape=[], dtype=tf.int32)
-  #   )
-  # )
+  @tf.function(
+    input_signature=(
+      tf.TensorSpec(shape=[None, 50], dtype=tf.int32),
+      tf.TensorSpec(shape=[], dtype=tf.int32)
+    )
+  )
   def predict(self, src, max_length_trg):
     predictions = self._model.predict(src, max_length_trg)
     return predictions
@@ -49,7 +49,6 @@ class Trainer(TrainerBase):
     if os.path.exists(bleu_src) and os.path.exists(bleu_ref):
       all_to_export = []
       for _, idx, batch in get_batch_data(data_file, 1, 1, shuffle=False):
-        #改成同时预测多个
         to_export = dict()
         src, trg = batch
         predictions = self.predict(src, self._param.max_length_trg)
@@ -57,7 +56,7 @@ class Trainer(TrainerBase):
         to_export['ch'] = self._param.encoder_cn.decode(
           src.numpy()[0].tolist())
         to_export['nbest'] = []
-        to_export['nbest'].append((None, result.rstrip()))
+        to_export['nbest'].append((None, result.strip()))
         all_to_export.append(to_export)
 
       total_time = time.time() - start_time
@@ -78,7 +77,7 @@ class Trainer(TrainerBase):
           f"total_time={total_time:.4f} secs avg_time={avg_time:.4f} sec/sample "
         )
       except AssertionError:
-        Logger.info('BLEU score compute error!')
+        Logger.info('BLEU score compute error: Translations are empty!')
         bleu = 0
 
       return -bleu

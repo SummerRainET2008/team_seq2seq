@@ -183,19 +183,20 @@ class Model(tf.keras.Model):
     dec_input = tf.expand_dims([SOS], 0)
     # [SOS]: shape: [x], dec_input shape: [1, x], x here is 1
 
-    ids = []
-    for _ in tf.range(max_length_trg):
+    ids = tf.TensorArray(dtype=tf.int32, size=max_length_trg)
+    ids.write(0, SOS)
+    for t in tf.range(max_length_trg-1):
       predictions, dec_hidden, attention_weights = self.decoder(
         dec_input, dec_hidden, enc_output
       )
       predicted_id = int(tf.argmax(predictions[0]))
       if predicted_id == EOS:
         break
-      ids.append(predicted_id)
+      ids.write(t+1, predicted_id)
       # the predicted ID is fed back into the model
       dec_input = tf.expand_dims([predicted_id], 0)
 
-    return tf.convert_to_tensor(ids, dtype=tf.int32)
+    return ids.stack()
 
   @tf.function(
     input_signature=(
