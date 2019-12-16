@@ -115,6 +115,5 @@ def main():
   trainer.train()
 
 if __name__ == '__main__':
-  tf.config.experimental_run_functions_eagerly(True)
   main()
 
