@@ -65,7 +65,8 @@ class Trainer(TrainerBase):
       if not os.path.exists(f"{self._param.path_bleu}/{dirname}"):
         os.mkdir(f"{self._param.path_bleu}/{dirname}")
       path_to_pydict = f"{self._param.path_bleu}/{dirname}/" \
-                       f"{self._checkpoint.run_sample_num.numpy()}.nbest.pydict"
+                       f"{self._checkpoint.run_sample_num.numpy()}." \
+                       f"nbest.pydict"
       with open(path_to_pydict, 'w', encoding='utf8') as f:
         f.writelines(f'{item}\n' for item in all_to_export)
       Logger.info('{} saved!'.format(path_to_pydict))
@@ -74,7 +75,8 @@ class Trainer(TrainerBase):
         Logger.info(
           f"eval[{self._checkpoint.run_sample_num.numpy()}]: "
           f"file={data_file} bleu={bleu} "
-          f"total_time={total_time:.4f} secs avg_time={avg_time:.4f} sec/sample "
+          f"total_time={total_time:.4f} secs "
+          f"avg_time={avg_time:.4f} sec/sample "
         )
       except AssertionError:
         Logger.info('BLEU score compute error: Translations are empty!')

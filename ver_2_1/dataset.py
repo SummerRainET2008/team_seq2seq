@@ -1,6 +1,4 @@
 import tensorflow as tf
-import io
-from ver_2_1 import *
 from ver_2_1.param import Param
 from pa_nlp.tf_2x import nlp_tf
 

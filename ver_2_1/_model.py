@@ -72,7 +72,8 @@ class BahdanauAttention(tf.keras.layers.Layer):
     hidden_with_time_axis = tf.expand_dims(query, 1)
 
     # score shape == (batch_size, max_length, 1) for applying score to self.V
-    # the shape of the tensor before applying self.V is (batch_size, max_length, units)
+    # the shape of the tensor before applying self.V is
+    # (batch_size, max_length, units)
     score = self.V(tf.nn.tanh(self.W1(values) + self.W2(hidden_with_time_axis)))
 
     # attention_weights shape == (batch_size, max_length, 1)
@@ -81,14 +82,15 @@ class BahdanauAttention(tf.keras.layers.Layer):
 
     # context_vector shape after sum == (batch_size, hidden_size)
     # values.shape: (batch_size, seq_len, enc_hidden)
-    context_vector = attention_weights * values  # (batch_size, seq_len, enc_hidden)
-    context_vector = tf.reduce_sum(context_vector, axis=1)  # reduce seq_len dimension
+    context_vector = attention_weights * values
+    # (batch_size, seq_len, enc_hidden)
+    context_vector = tf.reduce_sum(context_vector, axis=1)
+    # reduce seq_len dimension
 
+    # Context vector shape: (batch size, enc_hidden_units)
+    # Attention weights shape: (batch_size, sequence_length, 1)
     return context_vector, attention_weights
 
-
-# Context vector shape: (batch size, enc_hidden_units)
-# Attention weights shape: (batch_size, sequence_length, 1)
 
 class Decoder(tf.keras.Model):
   def __init__(self, vocab_size, embedding_dim, dec_units, batch_sz, rnn_type):
@@ -104,8 +106,10 @@ class Decoder(tf.keras.Model):
     else:
       assert False
 
-    self.rnn = layer(self.dec_units, return_state=True,
-                     return_sequences=True, recurrent_initializer='glorot_uniform')
+    self.rnn = layer(
+      self.dec_units, return_state=True,
+      return_sequences=True, recurrent_initializer='glorot_uniform'
+    )
 
     self.fc = tf.keras.layers.Dense(vocab_size)
     # use softmax
@@ -158,7 +162,9 @@ class Model(tf.keras.Model):
     enc_hidden_init = self.encoder.initialize_hidden_state()
     enc_output, enc_hidden = self.encoder(src, enc_hidden_init)
     dec_hidden = enc_hidden
-    dec_input = tf.expand_dims(tf.ones(tf.shape(trg)[0], dtype=tf.int32) * SOS, 1)
+    dec_input = tf.expand_dims(
+      tf.ones(tf.shape(trg)[0], dtype=tf.int32) * SOS, 1
+    )
     # dec_input shape: [tf.shape(enc_output)[0], 1] means # batch size sentences
     # with only first one word SOS
 

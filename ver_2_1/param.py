@@ -1,4 +1,3 @@
-import os
 from common.subword.sentence_encoder import SentenceEncoder
 from pa_nlp.tf_2x.estimator.param import ParamBase
 from pa_nlp.tf_2x import *
@@ -16,8 +15,7 @@ class Param(ParamBase):
     self.test_files = [] #[f"{self.path_feat}/test1.tfrecord"]
 
     # vocabulary
-    # src here refers to Chinese vocab, different from that in train and evaluate
-    self.path_to_vob_src = 'corpus/vob.src'
+    self.path_to_vob_src = 'corpus/vob.src' # Chinese vocab
     self.path_to_vob_trg = 'corpus/vob.tgt'
     self.encoder_cn = SentenceEncoder(self.path_to_vob_src)
     self.encoder_en = SentenceEncoder(self.path_to_vob_trg)
@@ -34,9 +32,9 @@ class Param(ParamBase):
     self.dec_units = 256 # 1024
     self.max_length_src = 50
     self.max_length_trg = 50
-    self.enc_layers = 4
+    self.enc_layers = 6
     self.lr = 5e-4
-    self.epoch_num   = 100
+    self.epoch_num   = 1000
     self.batch_size  = 2
     self.evaluate_freq = 10
 

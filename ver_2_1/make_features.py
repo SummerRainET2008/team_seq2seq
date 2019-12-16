@@ -38,7 +38,9 @@ def gen_train_data(data_file, tf_file, param):
         )
         yield cn, en # for sample in seg_samples seg_samples is a list
 
-  nlp_tf.tfrecord_write(get_file_record(data_file, param), Serializer(), tf_file)
+  nlp_tf.tfrecord_write(
+    get_file_record(data_file, param), Serializer(), tf_file
+  )
 
 def gen_test_data(data_file, tf_file, param):
   class Serializer:
@@ -56,15 +58,21 @@ def gen_test_data(data_file, tf_file, param):
   def get_file_record(data_file, param):
     with open(data_file, 'r', encoding='utf-8') as f:
       for line in f:
-        cn = convert_data(param.encoder_cn, line.strip(), pad=True, max_length=param.max_length_src)
+        cn = convert_data(
+          param.encoder_cn, line.strip(), pad=True,
+          max_length=param.max_length_src
+        )
         yield cn
 
-  nlp_tf.tfrecord_write(get_file_record(data_file, param), Serializer(), tf_file)
+  nlp_tf.tfrecord_write(
+    get_file_record(data_file, param), Serializer(), tf_file
+  )
 
 
 def convert_data(encoder_, sentence, pad=False, max_length=None):
   encoded = [encoder_.encode(v) for v in sentence.split()]
-  padded = [SOS] + [item for l in encoded for item in l][:max_length - 2] + [EOS]
+  padded = [SOS] + \
+           [item for l in encoded for item in l][:max_length - 2] + [EOS]
   if pad == True:
     padded = padded + [PAD] * max(0, max_length - len(padded))
   return padded
@@ -72,6 +80,6 @@ def convert_data(encoder_, sentence, pad=False, max_length=None):
 
 if __name__ == "__main__":
   param = Param()
-  gen_train_data('corpus/en_cn_test1.txt', param.train, param)
+  gen_train_data('corpus/nist02_test.cn', param.train, param)
   gen_train_data('corpus/nist02_test.cn', param.vali_file, param)
   # gen_train_data('corpus/nist02_test.cn', param.test_files[0], param)

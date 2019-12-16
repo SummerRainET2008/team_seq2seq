@@ -1,0 +1,3 @@
+ver_2 (OK)
+    1. encoder: bi-directional LSTM, multi-layers
+    2. BLEU: common.bleu.compute_bleu_by_nist_format.compute_bleu_score
