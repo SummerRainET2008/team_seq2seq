@@ -18,7 +18,7 @@ def _get_doc_id(ln):
   return rst[0]
 
 def _get_next_hyp(nbest_file: str, buff={}):
-  for d in nlp.read_pydict_file(nbest_file):
+  for d in nlp.pydict_file_read(nbest_file):
     nbest = d["nbest"]
     score, hyp = nbest[0] if nbest != [] else (0, "")
     yield hyp
