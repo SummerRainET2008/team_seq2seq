@@ -1,19 +1,10 @@
-import tensorflow as tf
-import numpy as np
-import os
-import time
+from common.bleu.compute_bleu_by_nist_format import compute_bleu_score
 from pa_nlp.nlp import Logger
 from pa_nlp.tf_2x import *
 from pa_nlp.tf_2x.estimator.train import TrainerBase
-from pa_nlp.tf_2x import nlp_tf
-
-from ver_2_1.param import Param
 from ver_2_1._model import Model
 from ver_2_1.dataset import get_batch_data
-
-from common.bleu.compute_bleu_by_nist_format import compute_bleu_score
-from nltk.translate.bleu_score import corpus_bleu, SmoothingFunction
-
+from ver_2_1.param import Param
 
 class Trainer(TrainerBase):
   def __init__(self, param):
@@ -23,12 +14,12 @@ class Trainer(TrainerBase):
                                     param.batch_size, False)
     super(Trainer, self).__init__(param, model, data_read_iter)
 
-  @tf.function(
-    input_signature=(
-      tf.TensorSpec(shape=[None, 50], dtype=tf.int32),
-      tf.TensorSpec(shape=[None, 50], dtype=tf.int32)
-    )
-  )
+  # @tf.function(
+  #   input_signature=(
+  #     tf.TensorSpec(shape=[None, 50], dtype=tf.int32),
+  #     tf.TensorSpec(shape=[None, 50], dtype=tf.int32)
+  #   )
+  # )
   def _train_one_batch(self, src, trg):
     with tf.GradientTape() as tape:
       loss = self._model(src, trg)
@@ -36,12 +27,12 @@ class Trainer(TrainerBase):
     self._apply_optimizer(tape, loss)
     return batch_loss
 
-  @tf.function(
-    input_signature=(
-      tf.TensorSpec(shape=[None, 50], dtype=tf.int32),
-      tf.TensorSpec(shape=[], dtype=tf.int32)
-    )
-  )
+  # @tf.function(
+  #   input_signature=(
+  #     tf.TensorSpec(shape=[None, 50], dtype=tf.int32),
+  #     tf.TensorSpec(shape=[], dtype=tf.int32)
+  #   )
+  # )
   def predict(self, src, max_length_trg):
     predictions = self._model.predict(src, max_length_trg)
     return predictions
@@ -57,7 +48,8 @@ class Trainer(TrainerBase):
     bleu_ref = f"corpus/{dirname}.ref"
     if os.path.exists(bleu_src) and os.path.exists(bleu_ref):
       all_to_export = []
-      for _, idx, batch in get_batch_data(data_file, 1, 1, shuffle=False):#改成同时预测多个
+      for _, idx, batch in get_batch_data(data_file, 1, 1, shuffle=False):
+        #改成同时预测多个
         to_export = dict()
         src, trg = batch
         predictions = self.predict(src, self._param.max_length_trg)
@@ -110,11 +102,10 @@ def main():
   Logger.info(f"GPU: {options.gpu}")
 
   param = Param()
-  # param.verify()
+  param.verify()
   trainer = Trainer(param)
   trainer.train()
 
 if __name__ == '__main__':
-  tf.config.experimental_run_functions_eagerly(True)
   main()
 

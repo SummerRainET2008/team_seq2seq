@@ -20,5 +20,6 @@ class SentenceEncoder(object):
     return ids
 
   def decode(self, ids: list):
+    ids = list(map(int, ids))
     return self._encoder.decode_ids(ids)
 

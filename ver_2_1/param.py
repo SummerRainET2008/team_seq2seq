@@ -38,7 +38,7 @@ class Param(ParamBase):
     self.lr = 5e-4
     self.epoch_num   = 50
     self.batch_size  = 2
-    self.evaluate_freq = 10
+    self.evaluate_freq = 2
 
     '''
     self.train_files = [f"{self.path_feat}/train.tfrecord"]
