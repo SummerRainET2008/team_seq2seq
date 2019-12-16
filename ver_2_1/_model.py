@@ -1,9 +1,9 @@
 from ver_2_1 import *
 import tensorflow as tf
 
-
 class Encoder(tf.keras.Model):
-  def __init__(self, vocab_size, embedding_dim, enc_units, batch_sz, num_layers, rnn_type):
+  def __init__(self, vocab_size, embedding_dim, enc_units, batch_sz,
+               num_layers, rnn_type):
     super(Encoder, self).__init__()
     self.batch_sz = batch_sz
     self.enc_units = enc_units
@@ -17,18 +17,25 @@ class Encoder(tf.keras.Model):
     else:
       assert False
 
-    self.bi_layer = tf.keras.layers.Bidirectional(layer(enc_units,
-                                                        return_sequences=True,
-                                                        return_state=False,
-                                                        recurrent_initializer='glorot_uniform'),
-                                                  merge_mode='concat')
-    self.enc_layers = [layer(enc_units, return_sequences=True,
-                             return_state=False,
-                             recurrent_initializer='glorot_uniform')
-                       for _ in range(num_layers - 2)]
-    self.top = layer(enc_units, return_sequences=True,
-                     return_state=True,
-                     recurrent_initializer='glorot_uniform')
+    self.bi_layer = tf.keras.layers.Bidirectional(
+      layer(
+        enc_units, return_sequences=True, return_state=False,
+        recurrent_initializer='glorot_uniform'
+      ),
+      merge_mode='concat'
+    )
+    self.enc_layers = [
+      layer(
+        enc_units, return_sequences=True, return_state=False,
+        recurrent_initializer='glorot_uniform'
+      )
+      for _ in range(num_layers - 2)
+    ]
+    self.top = layer(
+      enc_units, return_sequences=True,
+      return_state=True,
+      recurrent_initializer='glorot_uniform'
+    )
 
   def call(self, x, hidden):
     x = self.embedding(x)
@@ -40,8 +47,10 @@ class Encoder(tf.keras.Model):
     try:
       output, hidden_states = self.top(x)
     except ValueError:
-      output, hidden_states, _ = self.top(x)  # hidden_states.shape = (batch_size, hidden_units), hidden_states = output[:, -1, :]
-    return output, hidden_states  # Encoder output shape: (batch size, sequence length, enc_hidden_units)
+      output, hidden_states, _ = self.top(x)
+
+    # Encoder output shape: (batch size, sequence length, enc_hidden_units)
+    return output, hidden_states
 
   def initialize_hidden_state(self):
     return tf.zeros((self.batch_sz, self.enc_units))
@@ -80,7 +89,6 @@ class BahdanauAttention(tf.keras.layers.Layer):
 
 # Context vector shape: (batch size, enc_hidden_units)
 # Attention weights shape: (batch_size, sequence_length, 1)
-
 
 class Decoder(tf.keras.Model):
   def __init__(self, vocab_size, embedding_dim, dec_units, batch_sz, rnn_type):
@@ -177,11 +185,12 @@ class Model(tf.keras.Model):
 
     ids = []
     for _ in tf.range(max_length_trg):
-      predictions, dec_hidden, attention_weights = self.decoder(dec_input,
-                                                                dec_hidden,
-                                                                enc_output)
+      predictions, dec_hidden, attention_weights = self.decoder(
+        dec_input, dec_hidden, enc_output
+      )
       predicted_id = int(tf.argmax(predictions[0]))
-      if predicted_id == EOS: break
+      if predicted_id == EOS:
+        break
       ids.append(predicted_id)
       # the predicted ID is fed back into the model
       dec_input = tf.expand_dims([predicted_id], 0)
