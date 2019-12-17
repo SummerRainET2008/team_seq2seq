@@ -1,0 +1,7 @@
+ver_2_1 (OK)
+    1. encoder: bi-directional LSTM, multi-layers
+    2. BLEU: common.bleu.compute_bleu_by_nist_format.compute_bleu_score
+    3. @tf.function
+
+    step1: python3.7 ver_2_1/make_features.py
+    step2: python3.7 ver_2_1/trainer.py --gpu "1"
