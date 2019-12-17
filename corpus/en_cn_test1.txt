@@ -1,5 +1,14 @@
+<<<<<<< HEAD
+﻿She works as a bilingual secretary for an insurance company .	她 为 一 家 保险 公司 做 双语 秘书 。
+Many parents oppose bilingual education in schools .	很多 家长 反对 学校 实行 双语 教育 。
+Bilingual classes are more prevalent .	双语 教学 班级 更 为 流行 。
+He began to churn out literary compositions in English .	他 开始 用 英文 创作 大量 的 文学 作品 。
+I don't want him to feel forsaken and unhappy .	我 不 想 让 他 感到 被 抛弃 而 不 快乐 。
+Today I am going to work.	今天 我 准备 工作 。
+=======
 ﻿She works as a bilingual secretary for an insurance company.	她 为 一 家 保险 公司 做 双语 秘书。
 Many parents oppose bilingual education in schools.	很多 家长 反对 学校 实行 双语 教育。
 Bilingual classes are more prevalent.	双语 教学 班级 更 为 流行。
 He began to churn out literary compositions in English.	他 开始 用 英文 创作 大量 的 文学 作品。
 I don't want him to feel forsaken and unhappy.	我 不 想 让 他 感到 被 抛弃 而 不 快乐。
+>>>>>>> 8edb6f28788305f2925bb09ace2a225afdf29e50
