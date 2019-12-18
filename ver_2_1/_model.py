@@ -19,20 +19,22 @@ class Encoder(tf.keras.Model):
 
     self.bi_layer = tf.keras.layers.Bidirectional(
       layer(
-        enc_units, return_sequences=True, return_state=False,
+        enc_units,
+        activation="sigmoid",
+        return_sequences=True, return_state=False,
         recurrent_initializer='glorot_uniform'
       ),
       merge_mode='concat'
     )
     self.enc_layers = [
       layer(
-        enc_units, return_sequences=True, return_state=False,
+        enc_units, activation="sigmoid", return_sequences=True, return_state=False,
         recurrent_initializer='glorot_uniform'
       )
       for _ in range(num_layers - 2)
     ]
     self.top = layer(
-      enc_units, return_sequences=True,
+      enc_units, activation="sigmoid", return_sequences=True,
       return_state=True,
       recurrent_initializer='glorot_uniform'
     )
@@ -107,7 +109,9 @@ class Decoder(tf.keras.Model):
       assert False
 
     self.rnn = layer(
-      self.dec_units, return_state=True,
+      self.dec_units,
+      activation="sigmoid",
+      return_state=True,
       return_sequences=True, recurrent_initializer='glorot_uniform'
     )
 

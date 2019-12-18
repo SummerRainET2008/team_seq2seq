@@ -24,6 +24,7 @@ class Param(ParamBase):
 
     self.use_polynormial_decay = False
     self.use_warmup = False
+    self.incremental_train = False
 
     # model
     self.rnn_type = 'LSTM'
@@ -35,7 +36,7 @@ class Param(ParamBase):
     self.enc_layers = 6
     self.lr = 5e-4
     self.epoch_num   = 1000
-    self.batch_size  = 2
+    self.batch_size  = 128
     self.evaluate_freq = 10
 
     '''
