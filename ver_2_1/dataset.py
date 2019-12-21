@@ -46,9 +46,19 @@ def get_batch_data(tf_file, epoch_num, batch_size, shuffle: bool, train = True):
 
   yield from dataset
 
-
 if __name__ == '__main__':
   param = Param()
-  dataset = get_batch_data(param.vali_tf, 1, 1, shuffle=False, train=False)
-  for data in dataset:
+
+  data_read_iter = get_batch_data(param.train, param.epoch_num,
+                                  param.batch_size, False)
+
+  data_src, data_tgt = [], []
+  for data in data_read_iter:
+    src, tgt = data[2]
+    data_src.extend(src.numpy().tolist())
+    data_tgt.extend(tgt.numpy().tolist())
+
     print(data)
+    print(len(data_src), len(data_tgt))
+
+  pickle.dump([data_src, data_tgt], open("/tmp/input.data", "wb"))

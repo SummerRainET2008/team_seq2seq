@@ -5,6 +5,7 @@ from pa_nlp.tf_2x.estimator.train import TrainerBase
 from ver_2_1._model import Model
 from ver_2_1.dataset import get_batch_data
 from ver_2_1.param import Param
+import pickle
 
 class Trainer(TrainerBase):
   def __init__(self, param):
@@ -14,25 +15,30 @@ class Trainer(TrainerBase):
                                     param.batch_size, False)
     super(Trainer, self).__init__(param, model, data_read_iter)
 
-  @tf.function(
-    input_signature=(
-      tf.TensorSpec(shape=[None, 50], dtype=tf.int32),
-      tf.TensorSpec(shape=[None, 50], dtype=tf.int32)
-    )
-  )
-  def _train_one_batch(self, src, trg):
-    with tf.GradientTape() as tape:
-      loss = self._model(src, trg)
-    batch_loss = (loss / int(trg.shape[1]))
-    self._apply_optimizer(tape, loss)
-    return batch_loss
+    self.data_src = []
+    self.data_tgt = []
 
   @tf.function(
     input_signature=(
-      tf.TensorSpec(shape=[None, 50], dtype=tf.int32),
-      tf.TensorSpec(shape=[], dtype=tf.int32)
+      tf.TensorSpec(shape=[None, None], dtype=tf.int32),
+      tf.TensorSpec(shape=[None, None], dtype=tf.int32)
     )
   )
+  def _train_one_batch(self, src, trg):
+    print(f"retracing {src.shape}, {trg.shape}")
+
+    with tf.GradientTape() as tape:
+      loss = self._model(src, trg)
+    batch_loss = loss / tf.cast(tf.shape(trg)[1], tf.float32)
+    self._apply_optimizer(tape, loss)
+    return batch_loss
+
+  # @tf.function(
+  #   input_signature=(
+  #     tf.TensorSpec(shape=[None, 50], dtype=tf.int32),
+  #     tf.TensorSpec(shape=[], dtype=tf.int32)
+  #   )
+  # )
   def predict(self, src, max_length_trg):
     predictions = self._model.predict(src, max_length_trg)
     return predictions
@@ -106,6 +112,7 @@ def main():
   param.verify()
   trainer = Trainer(param)
   trainer.train()
+  trainer.save_data_to_file("input.data.pkl")
 
 if __name__ == '__main__':
   main()

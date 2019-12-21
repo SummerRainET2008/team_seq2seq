@@ -28,16 +28,16 @@ class Param(ParamBase):
 
     # model
     self.rnn_type = 'LSTM'
-    self.embedding_dim = 256 # 256
-    self.enc_units = 256 # 1024
-    self.dec_units = 256 # 1024
+    self.embedding_dim = 128 # 256
+    self.enc_units = 128 # 1024
+    self.dec_units = 128 # 1024
     self.max_length_src = 50
     self.max_length_trg = 50
-    self.enc_layers = 6
+    self.enc_layers = 4
     self.lr = 5e-4
-    self.epoch_num   = 1000
+    self.epoch_num   = 1
     self.batch_size  = 128
-    self.evaluate_freq = 10
+    self.evaluate_freq = 100000
 
     '''
     self.train_files = [f"{self.path_feat}/train.tfrecord"]
